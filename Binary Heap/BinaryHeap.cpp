@@ -38,8 +38,7 @@ template < class t> class binaryHeap{
 			int smallest=index, left=index*2+1, 		right=index*2+2;
 			if(left<dim && tree[left]<tree[smallest]) 	smallest=left;
 			if(right<dim && tree[right]<tree[smallest]) smallest=right;
-			if(smallest!=index)
-			{
+			if(smallest!=index){
 				swap(index, smallest);
 				balance(smallest);
 			}
