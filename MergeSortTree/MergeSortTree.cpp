@@ -8,10 +8,7 @@ template <class t> class MergeSortTree{
 		MergeSortTree(int l, int r, vector<t> &e){
 			_l=l, _r=r, _m=(l+r)/2;
 			v.resize(r-l+1);
-			if(l==r){
-				left=right=nullptr;
-				v[0]=e[l];
-			}
+			if(l==r) left=right=nullptr, 	v[0]=e[l];
 			else{
 				left=new MergeSortTree(_l,_m, e);
 				right=new MergeSortTree(_m+1,_r, e);
