@@ -12,7 +12,8 @@ struct fraction{
 		return other.num*(mcm/other.den)>num*(mcm/den);
 	}
 	bool operator>(const fraction &other)const{
-		return (*this<other)?false:true;
+		long long mcm=(den*other.den)/__gcd(den,other.den);
+		return other.num*(mcm/other.den)<num*(mcm/den);
 	}
 	bool operator==(const fraction &other)const{
 		long long mcm=(den*other.den)/__gcd(den,other.den);
