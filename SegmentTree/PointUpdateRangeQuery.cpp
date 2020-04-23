@@ -11,7 +11,7 @@ template<class T, T merge(T,T)>class SegmentTree{
 			build(0,(int)vals.size()-1,0,vals);
 		}
 		void update(int i, T value){ update(0,(int)tree.size()-1>>2,i,0,value);	}
-		T query(int L, int R){ return query(0,(int)tree.size()-1>>2,0,L,R);	}
+		T query(int L, int R){ return query(0,(int)tree.size()-1>>2,0,L,R); }
 	private:
 		vector<T> tree;
 		void build_default(int l, int r, int pos, T def){
