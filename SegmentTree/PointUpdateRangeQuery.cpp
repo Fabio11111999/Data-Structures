@@ -10,12 +10,8 @@ template<class T, T merge(T,T)>class SegmentTree{
 			tree.resize((int)vals.size()<<2);
 			build(0,(int)vals.size()-1,0,vals);
 		}
-		void update(int i, T value){ 
-			update(0,(int)tree.size()-1>>2,i,0,value);
-		}
-		T query(int L, int R){ 
-			return query(0,(int)tree.size()-1>>2,0,L,R);
-		}
+		void update(int i, T value){ update(0,(int)tree.size()-1>>2,i,0,value);	}
+		T query(int L, int R){ return query(0,(int)tree.size()-1>>2,0,L,R);	}
 	private:
 		vector<T> tree;
 		void build_default(int l, int r, int pos, T def){
@@ -35,22 +31,17 @@ template<class T, T merge(T,T)>class SegmentTree{
 			else tree[pos]=vals[l];
 		}
 		void update(int l, int r, int i, int pos, T val){
-			if(l==r)
-				tree[pos]=val;
+			if(l==r)	tree[pos]=val;
 			else{
-				if(i<=l+r>>1)
-					update(l,l+r>>1,i,2*pos+1,val);
+				if(i<=l+r>>1)	update(l,l+r>>1,i,2*pos+1,val);
 				else update(2+l+r>>1,r,i,2*pos+2,val);
 				tree[pos]=merge(tree[2*pos+1],tree[2*pos+2]);	
 			}
 		}
 		T query(int l, int r, int pos, int L, int R){
-			if(L<=l && R>=r)
-				return tree[pos];
-			if(R<=l+r>>1)
-				return query(l,l+r>>1,2*pos+1,L,R);
-			if(L>l+r>>1)
-				return query(2+l+r>>1,r,2*pos+2,L,R);
+			if(L<=l && R>=r)	return tree[pos];
+			if(R<=l+r>>1)	return query(l,l+r>>1,2*pos+1,L,R);
+			if(L>l+r>>1)	return query(2+l+r>>1,r,2*pos+2,L,R);
 			return merge(query(l,l+r>>1,2*pos+1,L,R),query(2+l+r>>1,r,2*pos+2,L,R));
 		}
 };
