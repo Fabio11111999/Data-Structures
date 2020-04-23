@@ -1,87 +1,56 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
-/* ************************* */
-/* Point Update, Range Query */
-/* ************************* */
-template<class t, t merge(t, t)>class SegmentTree{
+template<class T, T merge(T,T)>class SegmentTree{
 	public:
-		vector<t> tree;
-		int N;
-		SegmentTree(int N, t defaultValue){
+		SegmentTree(int N, T def){ 
 			tree.resize(N<<2);
-			this->N=N;
-			buildDefault(0,N-1,0,defaultValue);
+			build_default(0,N-1,def,0);
 		}
-		SegmentTree(int N, vector<t> &v){
-			tree.resize(N<<2);
-			this->N=N;
-			buildTree(0,N-1,0,v);
+		SegmentTree(vector<T> vals){ 
+			tree.resize((int)vals.size()<<2);
+			build(0,(int)vals.size()-1,0,vals);
 		}
-		int left(int i){
-			return i<<1|1;
+		void update(int i, T value){ 
+			update(0,(int)tree.size()-1>>2,i,0,value);
 		}
-		int right(int i){
-			return (1+i)<<1;
+		T query(int L, int R){ 
+			return query(0,(int)tree.size()-1>>2,0,L,R);
 		}
-		int mid(int start, int end){
-			return (start+end)>>1;
-		}
-		void buildDefault(int start, int end, int pos, t defValue){
-			if(start^end){
-				buildDefault(start,mid(start,end),left(pos),defValue);
-				buildDefault(mid(start,end)+1,end,right(pos),defValue);
+	private:
+		vector<T> tree;
+		void build_default(int l, int r, int pos, T def){
+			if(l^r){
+				build_default(l,l+r>>1,2*pos+1,def);
+				build_default(2+l+r>>1,r,2*pos+2,def);
+				tree[pos]=merge(tree[2*pos+1],tree[2*pos+2]);
 			}
-			tree[pos]=(start^end)?merge(tree[left(pos)],tree[right(pos)]):defValue;
+			else tree[pos]=def;			
 		}
-		void buildTree(int start, int end, int pos, vector<t> &v){
-			if(start^end){
-				buildTree(start,mid(start,end),left(pos),v);
-				buildTree(mid(start,end)+1,end,right(pos),v);
+		void build(int l, int r, int pos, vector<T> &vals){
+			if(l^r){
+				build(l,l+r>>1,2*pos+1,vals);
+				build(2+l+r>>1,r,2*pos+2,vals);
+				tree[pos]=merge(tree[2*pos+1],tree[2*pos+2]);
 			}
-			tree[pos]=(start^end)?merge(tree[left(pos)],tree[right(pos)]):v[start];
+			else tree[pos]=vals[l];
 		}
-		void update(int index, t newValue){
-			update(0,N-1,0,index,newValue);
-		}
-		void update(int start, int end, int pos, int index, t newValue){
-			if(start==end) 
-				tree[pos]=newValue;
+		void update(int l, int r, int i, int pos, T val){
+			if(l==r)
+				tree[pos]=val;
 			else{
-				if(index<=mid(start,end))
-					update(start,mid(start,end),left(pos),index,newValue);
-				else update(1+mid(start,end),end,right(pos),index,newValue);
-				tree[pos]=merge(tree[left(pos)],tree[right(pos)]);
+				if(i<=l+r>>1)
+					update(l,l+r>>1,i,2*pos+1,val);
+				else update(2+l+r>>1,r,i,2*pos+2,val);
+				tree[pos]=merge(tree[2*pos+1],tree[2*pos+2]);	
 			}
 		}
-		t query(int l, int r){
-			return query(0,N-1,0,l,r);
-		}
-		t query(int start, int end, int pos, int l, int r){
-			if(l<=start && r>=end)
+		T query(int l, int r, int pos, int L, int R){
+			if(L<=l && R>=r)
 				return tree[pos];
-			if(r<=mid(start,end))
-				return query(start,mid(start,end),left(pos),l,r);
-			if(l>mid(start,end))
-				return query(1+mid(start,end),end,right(pos),l,r);
-			else return merge(query(start,mid(start,end),left(pos),l,r),query(1+mid(start,end),end,right(pos),l,r));
+			if(R<=l+r>>1)
+				return query(l,l+r>>1,2*pos+1,L,R);
+			if(L>l+r>>1)
+				return query(2+l+r>>1,r,2*pos+2,L,R);
+			return merge(query(l,l+r>>1,2*pos+1,L,R),query(2+l+r>>1,r,2*pos+2,L,R));
 		}
-		void printTree(){
-			printTree(0,N-1,0);
-		}
-    //Write a print() function for the node to use printTree()
-		/*void printTree(int start, int end, int pos){
-			cout<<"Range: ["<<start<<"; "<<end<<"] value: ";
-			tree[pos].print();
-			cout<<endl;
-			if(start^end){
-				printTree(start,mid(start,end),left(pos));
-				printTree(1+mid(start,end),end,right(pos));
-			}
-		}*/
 };
-int merge(int a, int b){
-	return min(a,b);
-}
-int main(){
-	SegmentTree<int,merge> st(10,1e9);
-}
