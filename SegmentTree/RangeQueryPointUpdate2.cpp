@@ -123,7 +123,7 @@ public:
 		return query(0, sz - 1, 0, start, end);
 	}
 
-	unsigned int size() {
+	unsigned int size() const {
 		return sz;
 	}
 	
